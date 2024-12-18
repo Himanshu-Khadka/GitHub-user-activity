@@ -10,8 +10,14 @@ public class Main {
 
     public static void main(String[] args) {
         try {
-            //API connection
-            URL url = new URL("https://api.github.com/users/Himanshu-Khadka/events");
+            Scanner input = new Scanner(System.in);
+
+            // User input for username
+            System.out.print("Enter GitHub Username: ");
+            String username = input.nextLine();
+
+            // API connection
+            URL url = new URL("https://api.github.com/users/" + username + "/events");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.connect();
@@ -21,7 +27,7 @@ public class Main {
             if (responseCode != 200) {
                 throw new RuntimeException("HttpResponseCode: " + responseCode);
             } else {
-                //Read the API response
+                // Read the API response
                 StringBuilder line = new StringBuilder();
                 Scanner scanner = new Scanner(url.openStream());
                 while (scanner.hasNext()) {
@@ -31,11 +37,11 @@ public class Main {
 
                 JSONArray jsonArray = new JSONArray(line.toString());
 
-                //activity counts and details
+                // Activity counts and details
                 Map<String, Integer> activityFrequency = new HashMap<>();
                 List<String> activityDetails = new ArrayList<>();
 
-                //Process each activity
+                // Process each activity
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     String type = jsonObject.getString("type"); // Type of activity
@@ -50,7 +56,7 @@ public class Main {
                     activityDetails.add(detail);
                 }
 
-                // Step 5: Print Results
+                //Print Results
                 System.out.println("===== GitHub User Activity Summary =====\n");
                 System.out.printf("%-20s %-10s\n", "Activity Type", "Frequency");
                 System.out.println("-----------------------------------------");
@@ -63,12 +69,13 @@ public class Main {
                     System.out.println(detail);
                 }
             }
+
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
         }
     }
 
-    // Step 6: Helper method to format activity details
+    //Helper method to format activity details
     private static String formatActivityDetail(String type, String repo, String createdAt, JSONObject jsonObject) {
         switch (type) {
             case "PushEvent":
