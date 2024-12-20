@@ -10,11 +10,13 @@ public class Main {
 
     public static void main(String[] args) {
         try {
-            Scanner input = new Scanner(System.in);
+            // Check if username is provided
+            if (args.length == 0) {
+                System.out.println("Usage: github-user-activity <GitHub Username>");
+                return;
+            }
 
-            // User input for username
-            System.out.print("Enter GitHub Username: ");
-            String username = input.nextLine();
+            String username = args[0]; // First command-line argument
 
             // API connection
             URL url = new URL("https://api.github.com/users/" + username + "/events");
@@ -56,7 +58,7 @@ public class Main {
                     activityDetails.add(detail);
                 }
 
-                //Print Results
+                // Print Results
                 System.out.println("===== GitHub User Activity Summary =====\n");
                 System.out.printf("%-20s %-10s\n", "Activity Type", "Frequency");
                 System.out.println("-----------------------------------------");
@@ -75,7 +77,6 @@ public class Main {
         }
     }
 
-    //Helper method to format activity details
     private static String formatActivityDetail(String type, String repo, String createdAt, JSONObject jsonObject) {
         switch (type) {
             case "PushEvent":
